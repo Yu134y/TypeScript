@@ -21,8 +21,15 @@
 // console.log('Function parameters sample 5:', sum)
 
 // 05.オブジェクトの型定義
-import objectSample from './object/object'
-import typeAliasSample from './object/alias'
+// import objectSample from './object/object'
+// import typeAliasSample from './object/alias'
 
-objectSample()
-typeAliasSample()
+// objectSample()
+// typeAliasSample()
+
+// 06.配列とタプルの型定義
+import arraySample from './array/array'
+import tupleSample from './array/tuple'
+
+arraySample()
+tupleSample()
