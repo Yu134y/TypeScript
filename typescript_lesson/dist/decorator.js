@@ -53,4 +53,4 @@ User = __decorate([
     Component("<h1>{{ name }}</h1>", "#app"),
     Logging("Logging user")
 ], User);
-const user = new User();
+// const user = new User();
