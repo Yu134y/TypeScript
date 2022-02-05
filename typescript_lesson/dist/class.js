@@ -48,13 +48,13 @@ class Teacher extends Person {
 const teacher = Teacher.getInstance();
 const teacher2 = Teacher.getInstance();
 console.log(teacher, teacher2);
-class Developer {
-    constructor(name, age, experience) {
-        this.name = name;
-        this.age = age;
-        this.experience = experience;
-    }
-    greeting(message) {
-        console.log("Hello");
-    }
-}
+// class Developer implements Human {
+//   constructor(
+//     public name: string,
+//     public age: number,
+//     public experience: number
+//   ) {}
+//   greeting(message: string): void {
+//     console.log("Hello");
+//   }
+// }
