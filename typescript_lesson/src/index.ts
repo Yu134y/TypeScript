@@ -92,7 +92,7 @@ let unionType: number | string = 10;
 // unionType.toUpperCase()  この時点ではnumber型しか入っていないのでstring型のメソッドは使えない
 unionType = "hello";
 unionType.toUpperCase(); // string型が入ったことでstring型のメソッドが使える
-// unionn型の配列
+// union型の配列
 let unionTypes: (number | string)[] = [21, "hello"];
 
 // Literal型
