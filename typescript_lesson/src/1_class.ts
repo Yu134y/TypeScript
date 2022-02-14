@@ -1,5 +1,12 @@
 // クラスを定義してオブジェクトを作成する方法
 class Person {
+  // インスタンスに紐づかない(アクセスするにはクラス名.)
+  static species = "Homo sapiens";
+  static isAdult(age: number) {
+    if (age >= 20) return true;
+    return false;
+  }
+
   // フィールド
   name: string;
 
@@ -24,6 +31,7 @@ class Person {
     console.log(`Hello! My name is ${this.name}.`);
   }
 }
+
 const quill = new Person("Quill");
 console.log(quill); // Person {name: "Quill"}
 quill.greeting(); // Hello! My name is Quill.

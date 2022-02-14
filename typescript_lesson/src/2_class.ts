@@ -28,7 +28,21 @@ quill.greeting();
 
 // 他のクラスの機能を継承する方法
 class Teacher extends Person {
-  constructor(name: string, age: number, public subject: string) {
+  // getter:何かの値を取得したいときに何かを実行したいというときに使う
+  get subject() {
+    if (!this._subject) {
+      throw new Error("There is no subject.");
+    }
+    return this._subject;
+  }
+  // setter:teacher.subject = 'value'の時に実行される
+  set subject(value) {
+    if (!value) {
+      throw new Error("There is no subject.");
+    }
+    this._subject = value;
+  }
+  constructor(name: string, age: number, private _subject: string) {
     super(name, age);
   }
 
@@ -38,5 +52,8 @@ class Teacher extends Person {
     );
   }
 }
+
 const teacher = new Teacher("Jack", 28, "Math");
+teacher.subject = "Music";
+console.log(teacher.subject);
 teacher.greeting();
