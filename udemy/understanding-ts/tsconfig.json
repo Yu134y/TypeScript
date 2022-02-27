@@ -110,6 +110,7 @@
     "src/union-aliases.ts",
     "src/unknown-never.ts",
     "src/analytics.ts",
-    "src/classes.ts"
+    "src/classes.ts",
+    "src/interface.ts"
   ]
 }
