@@ -108,6 +108,8 @@
     "src/functions.ts",
     "src/objs-arrays-enums.ts",
     "src/union-aliases.ts",
-    "src/unknown-never.ts"
+    "src/unknown-never.ts",
+    "src/analytics.ts",
+    "src/classes.ts"
   ]
 }
