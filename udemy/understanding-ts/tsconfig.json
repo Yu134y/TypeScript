@@ -111,6 +111,7 @@
     "src/unknown-never.ts",
     "src/analytics.ts",
     "src/classes.ts",
-    "src/interface.ts"
+    "src/interface.ts",
+    "src/altitude-type.ts"
   ]
 }
