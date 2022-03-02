@@ -113,6 +113,7 @@
     "src/classes.ts",
     "src/interface.ts",
     "src/altitude-type.ts",
-    "src/generics.ts"
+    "src/generics.ts",
+    "src/decorator.ts"
   ]
 }

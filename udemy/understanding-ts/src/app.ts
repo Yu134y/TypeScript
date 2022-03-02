@@ -1,109 +1,52 @@
-function Logger(logString: string) {
-  console.log("LOGGER ファクトリ");
-  return function (constructor: Function) {
-    console.log(logString);
-    console.log(constructor);
-  };
+// Validation
+interface Validatable {
+  value: string | number;
+  required?: boolean;
+  minLength?: number;
+  maxLength?: number;
+  min?: number;
+  max?: number;
 }
 
-function WithTemplate(template: string, hookId: string) {
-  console.log("TEMPLATE ファクトリ");
-  return function <T extends { new (...args: any[]): { name: string } }>(
-    originalConstructor: T
+function validate(validatableInput: Validatable) {
+  let isValid = true;
+  if (validatableInput.required) {
+    isValid = isValid && validatableInput.value.toString().trim().length !== 0;
+  }
+  if (
+    validatableInput.minLength != null &&
+    typeof validatableInput.value === "string"
   ) {
-    return class extends originalConstructor {
-      constructor(..._: any[]) {
-        super();
-        console.log("テンプレートを表示");
-        const hookEl = document.getElementById(hookId);
-        if (hookEl) {
-          hookEl.innerHTML = template;
-          hookEl.querySelector("h1")!.textContent = this.name;
-        }
-      }
-    };
-  };
-}
-
-// @Logger("ログ出力中・PERSON")
-@Logger("ログ出力中")
-@WithTemplate("<h1>Personオブジェクト</h1>", "app")
-class Person {
-  name = "Max";
-
-  constructor() {
-    console.log("Personオブジェクトを作成中...");
+    isValid =
+      isValid && validatableInput.value.length >= validatableInput.minLength;
   }
-}
-
-const pers = new Person();
-console.log(pers);
-
-// ----------
-
-function Log(target: any, propertyName: string | Symbol) {
-  console.log("Property デコレータ");
-  console.log(target, propertyName);
-}
-
-function Log2(target: any, name: string, descriptor: PropertyDescriptor) {
-  console.log("Accessor デコレータ");
-  console.log(target);
-  console.log(name);
-  console.log(descriptor);
-}
-
-function Log3(
-  target: any,
-  name: string | Symbol,
-  descriptor: PropertyDescriptor
-) {
-  console.log("Method デコレータ");
-  console.log(target);
-  console.log(name);
-  console.log(descriptor);
-}
-
-function Log4(target: any, name: string | Symbol, position: number) {
-  console.log("Parameter デコレータ");
-  console.log(target);
-  console.log(name);
-  console.log(position);
-}
-
-class Product {
-  @Log
-  title: string;
-  private _price: number;
-
-  @Log2
-  set price(val: number) {
-    if (val > 0) {
-      this._price = val;
-    } else {
-      throw new Error("不正な価格です・0以下は設定できません");
-    }
+  if (
+    validatableInput.maxLength != null &&
+    typeof validatableInput.value === "string"
+  ) {
+    isValid =
+      isValid && validatableInput.value.length <= validatableInput.maxLength;
   }
-
-  constructor(t: string, p: number) {
-    this.title = t;
-    this._price = p;
+  if (
+    validatableInput.min != null &&
+    typeof validatableInput.value === "number"
+  ) {
+    isValid = isValid && validatableInput.value >= validatableInput.min;
   }
-
-  @Log3
-  getPriceWithTax(@Log4 tax: number) {
-    return this._price * (1 + tax);
+  if (
+    validatableInput.max != null &&
+    typeof validatableInput.value === "number"
+  ) {
+    isValid = isValid && validatableInput.value <= validatableInput.max;
   }
+  return isValid;
 }
 
-const p1 = new Product("Book", 100);
-const p2 = new Product("Book2", 200);
-
-function Autobind(_: any, _2: string, descriptor: PropertyDescriptor) {
+// autobind decorator
+function autobind(_: any, _2: string, descriptor: PropertyDescriptor) {
   const originalMethod = descriptor.value;
   const adjDescriptor: PropertyDescriptor = {
     configurable: true,
-    enumerable: false,
     get() {
       const boundFn = originalMethod.bind(this);
       return boundFn;
@@ -112,92 +55,135 @@ function Autobind(_: any, _2: string, descriptor: PropertyDescriptor) {
   return adjDescriptor;
 }
 
-class Printer {
-  message = "クリックしました！";
+// ProjectList Class
+class ProjectList {
+  templateElement: HTMLTemplateElement;
+  hostElement: HTMLDivElement;
+  element: HTMLElement;
 
-  @Autobind
-  showMessage() {
-    console.log(this.message);
+  constructor(private type: "active" | "finished") {
+    this.templateElement = document.getElementById(
+      "project-list"
+    )! as HTMLTemplateElement;
+    this.hostElement = document.getElementById("app")! as HTMLDivElement;
+
+    const importedNode = document.importNode(
+      this.templateElement.content,
+      true
+    );
+    this.element = importedNode.firstElementChild as HTMLElement;
+    this.element.id = `${this.type}-project`;
+    this.attach();
+    this.renderContent();
+  }
+
+  private renderContent() {
+    const listId = `${this.type}-projects-list`;
+    this.element.querySelector("ul")!.id = listId;
+    this.element.querySelector("h2")!.textContent =
+      this.type === "active" ? "実行中プロジェクト" : "完了プロジェクト";
+  }
+
+  private attach() {
+    this.hostElement.insertAdjacentElement("beforeend", this.element);
   }
 }
 
-const p = new Printer();
-p.showMessage();
+// ProjectInput Class
+class ProjectInput {
+  templateElement: HTMLTemplateElement;
+  hostElement: HTMLDivElement;
+  element: HTMLFormElement;
+  titleInputElement: HTMLInputElement;
+  descriptionInputElement: HTMLInputElement;
+  mandayInputElement: HTMLInputElement;
 
-const button = document.querySelector("button")!;
-button.addEventListener("click", p.showMessage);
+  constructor() {
+    this.templateElement = document.getElementById(
+      "project-input"
+    )! as HTMLTemplateElement;
+    this.hostElement = document.getElementById("app")! as HTMLDivElement;
 
-// ----------
+    const importedNode = document.importNode(
+      this.templateElement.content,
+      true
+    );
+    this.element = importedNode.firstElementChild as HTMLFormElement;
+    this.element.id = "user-input";
 
-interface ValidatorConfig {
-  [prop: string]: {
-    [validatableProp: string]: string[]; // ['required', 'positive']
-  };
-}
+    this.titleInputElement = this.element.querySelector(
+      "#title"
+    ) as HTMLInputElement;
+    this.descriptionInputElement = this.element.querySelector(
+      "#description"
+    ) as HTMLInputElement;
+    this.mandayInputElement = this.element.querySelector(
+      "#manday"
+    ) as HTMLInputElement;
 
-const registeredValidators: ValidatorConfig = {};
-
-function Required(target: any, propName: string) {
-  registeredValidators[target.constructor.name] = {
-    ...registeredValidators[target.constructor.name],
-    [propName]: ["required"],
-  };
-}
-
-function PositiveNumber(target: any, propName: string) {
-  registeredValidators[target.constructor.name] = {
-    ...registeredValidators[target.constructor.name],
-    [propName]: ["positive"],
-  };
-}
-
-function validate(obj: any) {
-  const objValidatorConfig = registeredValidators[obj.constructor.name];
-  if (!objValidatorConfig) {
-    return true;
+    this.configure();
+    this.attach();
   }
-  let isValid = true;
-  for (const prop in objValidatorConfig) {
-    for (const validator of objValidatorConfig[prop]) {
-      switch (validator) {
-        case "required":
-          isValid = isValid && !!obj[prop];
-          break;
-        case "positive":
-          isValid = isValid && obj[prop] > 0;
-          break;
-      }
+
+  private gatherUserInput(): [string, string, number] | void {
+    const enteredTitle = this.titleInputElement.value;
+    const enteredDescription = this.descriptionInputElement.value;
+    const enteredManday = this.mandayInputElement.value;
+
+    const titleValidatable: Validatable = {
+      value: enteredTitle,
+      required: true,
+    };
+    const descriptionValidatable: Validatable = {
+      value: enteredDescription,
+      required: true,
+      minLength: 5,
+    };
+    const mandayValidatable: Validatable = {
+      value: +enteredManday,
+      required: true,
+      min: 1,
+      max: 1000,
+    };
+    if (
+      !validate(titleValidatable) ||
+      !validate(descriptionValidatable) ||
+      !validate(mandayValidatable)
+    ) {
+      alert("入力値が正しくありません。再度お試しください。");
+      return;
+    } else {
+      return [enteredTitle, enteredDescription, +enteredManday];
     }
   }
-  return isValid;
-}
 
-class Course {
-  @Required
-  title: string;
-  @PositiveNumber
-  price: number;
+  private clearInputs() {
+    this.titleInputElement.value = "";
+    this.descriptionInputElement.value = "";
+    this.mandayInputElement.value = "";
+  }
 
-  constructor(t: string, p: number) {
-    this.title = t;
-    this.price = p;
+  @autobind
+  private submitHandler(event: Event) {
+    event.preventDefault();
+    console.log(this.titleInputElement.value);
+    const userInput = this.gatherUserInput();
+    if (Array.isArray(userInput)) {
+      const [title, desc, manday] = userInput;
+      console.log(title, desc, manday);
+      this.clearInputs();
+    }
+  }
+
+  private configure() {
+    this.element.addEventListener("submit", this.submitHandler);
+  }
+
+  private attach() {
+    this.hostElement.insertAdjacentElement("afterbegin", this.element);
   }
 }
 
-const courseForm = document.querySelector("form")!;
-courseForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-  const titleEl = document.getElementById("title") as HTMLInputElement;
-  const priceEl = document.getElementById("price") as HTMLInputElement;
-
-  const title = titleEl.value;
-  const price = +priceEl.value;
-
-  const createdCourse = new Course(title, price);
-
-  if (!validate(createdCourse)) {
-    alert("正しく入力してください！");
-    return;
-  }
-  console.log(createdCourse);
-});
+const prjInput = new ProjectInput();
+const activeProjectList = new ProjectList("active");
+const finishedProjectList = new ProjectList("finished");
