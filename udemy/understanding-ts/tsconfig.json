@@ -116,6 +116,7 @@
     "src/generics.ts",
     "src/decorator.ts",
     "src/project-management.ts",
-    "src/product.model.ts"
+    "src/product.model.ts",
+    "src/third-party-library.ts"
   ]
 }

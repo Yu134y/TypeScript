@@ -1,31 +1,40 @@
-import "reflect-metadata";
-import { plainToInstance } from "class-transformer";
-import { validate } from "class-validator";
+import axios from "axios";
 
-import { Product } from "./product.model";
+const form = document.querySelector("form")!;
+const addressInput = document.getElementById("address")! as HTMLInputElement;
 
-const products = [
-  { title: "商品1", price: 100 },
-  { title: "商品2", price: 200 },
-];
+const GOOGLE_API_KEY = "AIzaSyCuRvP0M6G9L5yXIOEEC8WXpAY6XMSRCfs";
 
-const newProd = new Product("", -100);
-validate(newProd).then((errors) => {
-  if (errors.length) {
-    console.log("バリデーションエラー！");
-    console.log(errors);
-  }
-  console.log(newProd.getInformation());
-});
+type GoogleGeocodingResponse = {
+  results: { geometry: { location: { lat: number; lng: number } } }[];
+  status: "OK" | "ZERO_RESULTS";
+};
 
-// const p1 = new Product("商品1", 100);
+function searchAddressHandler(event: Event) {
+  event.preventDefault();
+  const enteredAddress = addressInput.value;
 
-// const loadedProducts = products.map((prod) => {
-//   return new Product(prod.title, prod.price);
-// });
-
-const loadedProducts = plainToInstance(Product, products);
-
-for (const prod of loadedProducts) {
-  console.log(prod.getInformation());
+  axios
+    .get<GoogleGeocodingResponse>(
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURI(
+        enteredAddress
+      )}&key=${GOOGLE_API_KEY}`
+    )
+    .then((response) => {
+      if (response.data.status !== "OK") {
+        throw new Error("座標を取得できませんでした。");
+      }
+      const coordinates = response.data.results[0].geometry.location;
+      const map = new google.maps.Map(document.getElementById("map")!, {
+        center: coordinates,
+        zoom: 16,
+      });
+      new google.maps.Marker({ position: coordinates, map: map });
+    })
+    .catch((err) => {
+      alert(err.message);
+      console.log(err);
+    });
 }
+
+form.addEventListener("submit", searchAddressHandler);
