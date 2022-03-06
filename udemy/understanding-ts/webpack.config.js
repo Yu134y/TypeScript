@@ -8,7 +8,19 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
         publicPath: '/dist/',
     },
-    devtool: 'inline-source-map',
+    devServer: {
+        static: [
+            {
+                directory: path.resolve(__dirname, "dist"),
+                publicPath: "/dist",
+            },
+            {
+                directory: __dirname,
+                publicPath: "/",
+            },
+        ],
+    },
+    devtool: 'eval',
     module: {
         rules: [
             {
