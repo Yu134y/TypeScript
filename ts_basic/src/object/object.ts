@@ -3,7 +3,7 @@ export default function objectSample() {
     name: 'yu',
     age: 22,
   }
-  //   a.name  // aというobjectにはnameというプロパティがないとエラーが出る
+  // a.name  //aというobjectにはnameというプロパティがないとエラーが出る
 
   // オブジェクトリテラル記法で型定義
   let country: {
@@ -21,7 +21,7 @@ export default function objectSample() {
   }
   console.log('Object object sample2:', country)
 
-  //   オプショナルとreadonly
+  // オプショナルとreadonly
   const profile: {
     age: number
     lastName: string
@@ -35,10 +35,10 @@ export default function objectSample() {
 
   profile.gender = 'male'
   profile.lastName = 'Suzuki'
-  //   profile.firstName = 'Ichiro'  // firstNameプロパティはreadonlyなので再代入不可
+  // profile.firstName = 'Ichiro'  // firstNameプロパティはreadonlyなので再代入不可
   console.log('Object object sample3:', profile)
 
-  //   インデックスシグネチャ
+  // インデックスシグネチャ
   const capitals: {
     [countryName: string]: string
   } = {
