@@ -4,9 +4,9 @@ export default function notExistSample() {
 
   name = 'yu'
   if (name) {
-    console.log(`notExist sample 3: 吾輩は猫である。名前は${name}`)
+    console.log(`notExist sample 2: 吾輩は猫である。名前は${name}`)
   } else {
-    console.log(`notExist sample 2: 吾輩はネコである。名前はまだ${name}`)
+    console.log(`notExist sample 3: 吾輩は猫である。名前はまだ${name}`)
   }
 
   let age = undefined
@@ -14,8 +14,8 @@ export default function notExistSample() {
 
   age = 22
   if (age) {
-    console.log(`notExist sample 6: 年齢は${age}です`)
+    console.log(`notExist sample 5: 年齢は${age}です`)
   } else {
-    console.log('notExist sample 5: 年齢は秘密です')
+    console.log('notExist sample 6: 年齢は秘密です')
   }
 }

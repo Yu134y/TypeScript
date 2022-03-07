@@ -5,7 +5,7 @@ export default function unknownSample() {
   const isFoo = maybeNumber === 'foo'
   console.log('unknown sample 2:', typeof isFoo, isFoo)
 
-  //   const sum = maybeNumber + 10
+  // const sum = maybeNumber + 10
 
   if (typeof maybeNumber === 'number') {
     const sum = maybeNumber + 10
