@@ -60,3 +60,10 @@ export default function genericsSample() {
   type GenericReduce3<T> = (array: T[], initialValue: T) => T
   type GenericReduce4 = <T>(array: T[], initialValue: T) => T
 }
+
+// 呼び出し側の共通化
+// ポリモーフィズム：多態性・多相性(いろいろな形に変化できること)
+
+// ジェネリック型を用いると・・・
+// ・肩を抽象化して共通化できる
+// ・呼び出すときに具体的な型を渡す
