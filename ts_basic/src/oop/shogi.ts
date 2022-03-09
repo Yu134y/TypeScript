@@ -1,10 +1,10 @@
+// 将棋をモデル化してみよう
 type Suji = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 type Dan = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
 type Player = 'first' | 'second'
 
 // 駒の位置を表すクラス
 class Position {
-  // private修飾子のついたプロパティは、Positionクラスから生まれたインスタンスのみで使用できる
   constructor(private suji: Suji, private dan: Dan) {}
 
   // パラメータに渡された位置と現在の位置を比較するメソッド
@@ -12,50 +12,49 @@ class Position {
     if (player === 'first') {
       return {
         suji: Math.abs(position.suji - this.suji),
-        dan: Math.abs(Number(position.dan) - Number(this.dan)),
+        dan: Math.abs(+position.dan - +this.dan),
       }
-    } else {
-      return {
-        suji: Math.abs(position.suji - this.suji),
-        dan: -Math.abs(Number(position.dan) - Number(this.dan)), // 段（縦の位置）は正負反転
-      }
+    }
+    // 段(縦の位置)は正負反転
+    return {
+      suji: Math.abs(position.suji - this.suji),
+      dan: -Math.abs(+position.dan - +this.dan),
     }
   }
 }
 
 // 駒を表すクラス
-// Pieceは抽象クラス
+// 抽象クラスはインスタンス化できない(abstract修飾子のついたクラス)
+// →継承でサブクラスを作るためのクラス
 abstract class Piece {
-  // protected修飾子のついたプロパティは、Pieceクラスとサブクラスから生まれたインスタンスで使用できる
+  // Pieceクラスとサブクラスでアクセスできる
   protected position: Position
+
   constructor(private readonly player: Player, suji: Suji, dan: Dan) {
     this.position = new Position(suji, dan)
   }
 
-  // メソッドの定義
-  // パラメータに渡された位置へコマを移動するメソッド
-  // publicなので、サブクラスでオーバーライドできる
+  // パラメータに渡された位置へ駒を移動するメソッド
+  // publicなので、サブクラスでオーバーライド(上書き)できる
   moveTo(position: Position) {
     this.position = position
   }
 
   // 移動できるかどうかを判定するメソッド
-  // abstractをつけて宣言しておき、サブクラスで具体的に実装する
+  // 駒の種類によって判定が変わるので抽象化して、サブクラスで具体的に実装する
   abstract canMoveTo(position: Position, player: Player): boolean
 }
 
-// Pieceクラスを継承したOshoクラスを宣言
+// 王将
 class Osho extends Piece {
   // 王将のcanMoveToメソッドを具体的に実装する
   canMoveTo(position: Position, player: Player): boolean {
-    // 移動先に指定された位置(position)と現在の位置(this.position)を比較
     const distance = this.position.distanceFrom(position, player)
-    // 移動先との距離が2未満、つまり1マス以内なら移動できる
     return distance.suji < 2 && distance.dan < 2
   }
 }
 
-// Pieceクラスを継承したFuクラスを宣言
+// 歩
 class Fu extends Piece {
   canMoveTo(position: Position, player: Player): boolean {
     const distance = this.position.distanceFrom(position, player)
@@ -64,7 +63,7 @@ class Fu extends Piece {
   }
 }
 
-// Fuクラスを継承したNarikinクラスを宣言
+// 成金
 class Narikin extends Fu {
   canMoveTo(position: Position, player: Player): boolean {
     const distance = this.position.distanceFrom(position, player)
