@@ -26,7 +26,7 @@ type Rice = {
 
 type MaboDon = MaboDofu & Rice // 交差型(intersection)
 
-// MaboDofuとRice両方の型をモル変数を定義
+// MaboDofuとRice両方の型を持つ変数を定義
 const maboDon: MaboDon = {
   calories: 500,
   spicyLevel: 10,
@@ -67,16 +67,10 @@ const cotrip: Handbook = {
 
 // インターフェースでクラスに型を定義する
 class Comic implements Book {
-  page: number
-  title: string
-
-  constructor(page: number, title: string, private publishYear: string) {
-    this.page = page
-    this.title = title
-  }
+  constructor(public page: number, public title: string, private publishYear: string) {}
 
   getPublishYear() {
-    return this.title + 'が発売されたのは' + this.publishYear + '年です。'
+    return `${this.title}が発売されたのは${this.publishYear}年です。`
   }
 }
 
